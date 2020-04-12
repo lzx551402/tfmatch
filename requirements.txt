@@ -1,0 +1,5 @@
+tensorflow-gpu==1.15.2
+pyyaml
+matplotlib
+progressbar2
+opencv-python

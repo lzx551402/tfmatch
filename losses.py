@@ -47,10 +47,6 @@ def make_detector_loss(pos0, pos1, dense_feat_map0, dense_feat_map1,
             radius_mask_row = None
             radius_mask_col = None
 
-        if config['det']['coupled_loss']:
-            valid_dist_mat = get_dist_mat(
-                valid_feat0, valid_feat1, 'euclidean_dist')
-
         si_loss, si_accuracy, matched_mask = tf.cond(
             tf.less(valid_num, 32),
             lambda: (tf.constant(0.), tf.constant(1.),
@@ -59,9 +55,7 @@ def make_detector_loss(pos0, pos1, dense_feat_map0, dense_feat_map1,
                 tf.expand_dims(valid_feat0, 0), tf.expand_dims(valid_feat1, 0),
                 loss_type=loss_type,
                 radius_mask_row=radius_mask_row, radius_mask_col=radius_mask_col,
-                # dist_mat=tf.expand_dims(valid_dist_mat, axis=0),
-                corr_weight=tf.expand_dims(
-                    corr_weight, 0) if corr_weight is not None else None,
+                corr_weight=tf.expand_dims(corr_weight, 0) if corr_weight is not None else None,
                 name='si_loss')
         )
 

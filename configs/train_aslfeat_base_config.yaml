@@ -1,0 +1,47 @@
+solver:
+  optimizer:
+    name: 'SGD'
+    momentum: 0.9
+  regularization:
+    weight_decay: 0.0001
+  lr:
+    policy: 'exp'
+    base_lr: 0.1
+    gamma: 0.1
+    stepvalue: 200000
+  extra:
+    global_step: -1
+    adjust_lr: []
+    update_var_scope:
+recoverer:
+  pretrained_model:
+  ckpt_step:
+  exclude_var:
+dump:
+  snapshot: 10000
+  display: 20
+  max_steps: 400000
+  log_dir:
+network:
+  loss_type: 'HARD_CONTRASTIVE'
+  photaug: true
+  dense_desc: true
+  resize: 480
+  use_corr_n: 512
+  deform_desc: 0
+  aug:
+    geo_context: false
+    vis_context: false
+  det:
+    weight: 1.0
+    kpt_n: 512
+    corr_weight: true
+    safe_radius: 12
+    kpt_refinement: false
+    score_thld: -1
+    edge_thld: 10
+    nms_size: 3
+    eof_mask: 5
+    multi_level: true
+    need_norm: true
+    use_peakiness: true

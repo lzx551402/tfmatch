@@ -1,0 +1,47 @@
+solver:
+  optimizer:
+    name: 'SGD'
+    momentum: 0.9
+  regularization:
+    weight_decay: 0.0001
+  lr:
+    policy: 'exp'
+    base_lr: 0.01
+    gamma: 0.1
+    stepvalue: 200000
+  extra:
+    global_step: 0
+    adjust_lr: []
+    update_var_scope: 'deform_param,conv6/,conv6_0/,conv6_1/'
+recoverer:
+  pretrained_model: 'ckpt-aslfeat-base/model.ckpt'
+  ckpt_step: 400000
+  exclude_var: 'deform_param,Momentum'
+dump:
+  snapshot: 10000
+  display: 20
+  max_steps: 400000
+  log_dir:
+network:
+  loss_type: 'HARD_CONTRASTIVE'
+  photaug: true
+  dense_desc: true
+  resize: 480
+  use_corr_n: 512
+  deform_desc: 1
+  aug:
+    geo_context: false
+    vis_context: false
+  det:
+    weight: 1.0
+    kpt_n: 512 
+    corr_weight: true
+    safe_radius: 12
+    kpt_refinement: false
+    score_thld: -1
+    edge_thld: 10
+    nms_size: 3
+    eof_mask: 5
+    multi_level: true
+    need_norm: true
+    use_peakiness: true
