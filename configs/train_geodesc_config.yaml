@@ -29,10 +29,6 @@ network:
   resize: -1
   use_corr_n: -1
   deform_desc: 0
-  reg:
-    sos: -1
-    geo: false
-    orthog: false
   aug:
     geo_context: false
     vis_context: false
