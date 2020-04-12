@@ -43,5 +43,4 @@ network:
     nms_size: 3
     eof_mask: 5
     multi_level: true
-    need_norm: true
     use_peakiness: true
