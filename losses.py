@@ -116,7 +116,7 @@ def make_structured_loss(feat_anc, feat_pos,
         inlier_mask = tf.cast(tf.ones((batch_size, num_corr)), tf.bool)
     inlier_num = tf.count_nonzero(tf.cast(inlier_mask, tf.float32), axis=-1)
 
-    if loss_type == 'LOG' or loss_type == 'L2NET':
+    if loss_type == 'LOG' or loss_type == 'L2NET' or loss_type == 'CIRCLE':
         dist_type = 'cosine_dist'
     elif loss_type.find('HARD') >= 0:
         dist_type = 'euclidean_dist'
@@ -172,6 +172,36 @@ def make_structured_loss(feat_anc, feat_pos,
 
         loss_row = -tf.math.log(tf.linalg.diag_part(softmax_row))
         loss_col = -tf.math.log(tf.linalg.diag_part(softmax_col))
+    
+    elif loss_type == 'CIRCLE':
+        log_scale = 512
+        m = 0.1
+        neg_mask_row = tf.expand_dims(tf.eye(num_corr), 0)
+        if radius_mask_row is not None:
+            neg_mask_row += radius_mask_row
+        neg_mask_col = tf.expand_dims(tf.eye(num_corr), 0)
+        if radius_mask_col is not None:
+            neg_mask_col += radius_mask_col
+
+        pos_margin = 1 - m
+        neg_margin = m
+        pos_optimal = 1 + m
+        neg_optimal = -m
+
+        neg_mat_row = dist_mat - 128 * neg_mask_row
+        neg_mat_col = dist_mat - 128 * neg_mask_col
+
+        lse_positive = tf.math.reduce_logsumexp(-log_scale * (pos_vec[..., None] - pos_margin) * \
+                    tf.stop_gradient(tf.maximum(pos_optimal - pos_vec[..., None], 0)), axis=-1)
+        
+        lse_negative_row = tf.math.reduce_logsumexp(log_scale * (neg_mat_row - neg_margin) * \
+                    tf.stop_gradient(tf.maximum(neg_mat_row - neg_optimal, 0)), axis=-1)
+
+        lse_negative_col = tf.math.reduce_logsumexp(log_scale * (neg_mat_col - neg_margin) * \
+                    tf.stop_gradient(tf.maximum(neg_mat_col - neg_optimal, 0)), axis=-2)
+
+        loss_row = tf.math.softplus(lse_positive + lse_negative_row) / log_scale
+        loss_col = tf.math.softplus(lse_positive + lse_negative_col) / log_scale
 
     else:
         raise NotImplementedError()

@@ -78,7 +78,9 @@ The model will be saved in ``ckpt-aslfeat-dcn``. To use blended images and rende
 
 ### Training ContextDesc
 
-To train ContextDesc, you will need to additionally prepare the regional features. Limited by the storage, we do not host those feature files on AWS, but provide here an [instruction](docs/extract_delf_regional_features.md) for data preparation.
+To train ContextDesc, you will need to additionally prepare the regional features. Limited by the storage space, we do not host those feature files on AWS. You may use the retrieval model as provided in [ContextDesc](https://github.com/lzx551402/contextdesc) project, extract and save the regional features as binary files regarding [feature list](https://github.com/lzx551402/GL3D/blob/v2/list/comb/regional_feat_list.txt).
+
+More concretely, you will need to resize each input image to 448x448, and save the feature file by ``reg_feat.astype(np.float32).tofile(save_path)``, where reg_feat is a 14x14x2048 numpy array (TODO: provide a script to extract the features).
 
 Once the regional features are extracted, you may checkout ``config/train_contextdesc_config.yaml`` and ``train_contextdesc.sh``, then call:
 
