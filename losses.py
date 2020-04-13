@@ -116,7 +116,7 @@ def make_structured_loss(feat_anc, feat_pos,
         inlier_mask = tf.cast(tf.ones((batch_size, num_corr)), tf.bool)
     inlier_num = tf.count_nonzero(tf.cast(inlier_mask, tf.float32), axis=-1)
 
-    if loss_type == 'LOG' or loss_type == 'L2NET' >= 0:
+    if loss_type == 'LOG' or loss_type == 'L2NET':
         dist_type = 'cosine_dist'
     elif loss_type.find('HARD') >= 0:
         dist_type = 'euclidean_dist'
