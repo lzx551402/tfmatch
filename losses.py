@@ -133,7 +133,7 @@ def make_structured_loss(feat_anc, feat_pos,
             10 * tf.expand_dims(tf.eye(num_corr), 0)
         mask = tf.cast(
             tf.less(dist_mat_without_min_on_diag, 0.008), tf.float32)
-        dist_mat_without_min_on_diag += mask
+        dist_mat_without_min_on_diag += mask*10
 
         if radius_mask_row is not None:
             hard_neg_dist_row = dist_mat_without_min_on_diag + 10 * radius_mask_row
